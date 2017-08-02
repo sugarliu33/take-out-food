@@ -79,24 +79,23 @@ function typeTwoCharge(buyItemsInfo, promotionTwo) {
   return typeTwoPromotions;
 }
 
-function buildPrintList(buyItemsInfo, bestCharge) {
-  console.log('ok');
+function buildPrintList(bestCharge, buyItemsInfo) {
   var printItemsList = '';
   var summary = 0;
   for (let obj of buyItemsInfo) {
     summary += obj.totalPrice;
   }
-  printItemsList += '============= 订餐明细 =============';
+  printItemsList += '============= 订餐明细 =============' + '\n';
   for (let obj of buyItemsInfo) {
     printItemsList += obj.name + " x "+ obj.count + " = "+ obj.totalPrice + "元" + '\n';
   }
   printItemsList += '-----------------------------------' + '\n' + '使用优惠:' + '\n';
   if (bestCharge[0].type === '指定菜品半价'){
-    printItemsList += '(' + bestCharge[0].name +'), '+ '省' + bestCharge[0].charge + '元'+'\n';
+    printItemsList += '指定菜品半价(' + bestCharge[0].name +')，'+ '省' + bestCharge[0].charge + '元'+'\n';
   }
   printItemsList += '-----------------------------------' + '\n';
-  printItemsList += '总计：' + summary + '元' + '\n';
-  printItemsList += '===================================';
+  printItemsList += '总计：' + (summary - bestCharge[0].charge) + '元' + '\n';
+  printItemsList += '===================================' + '\n';
   return printItemsList;
 }
 module.exports = { buildItemsInfo: buildItemsInfo, inputService: inputService, typeOneCharge: typeOneCharge,
