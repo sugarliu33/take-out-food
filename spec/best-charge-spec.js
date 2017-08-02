@@ -88,11 +88,11 @@ describe (' Test calculatePromotions ',function () {
     let buyItemsInfo = [ { id: 'ITEM0013',
       count: 4,
       name: '肉夹馍',
-      price: '6.00',
-      totalPrice: 24.00 }];
-      let promotionsInfo = promotionsInfo();
-      let bestCharge = bestCharge.calculatePromotions(buyItemsInfo, promotionsInfo);
-      expect(bestCharge).toEqual(null);
+      price: 6.00,
+      totalPrice: 24.00 } ];
+    let temp = promotionsInfo();
+    let temp2 = bestCharge.calculatePromotions(buyItemsInfo, temp);
+    expect(temp2).toEqual(0);
     });
 });
 
@@ -101,8 +101,8 @@ describe ('Test typeOneCharge', function () {
       let buyItemsInfo = [ { id: 'ITEM0013',
         count: 4,
         name: '肉夹馍',
-        price: '6.00',
-        totalPrice: '24.00' },
+        price: 6.00,
+        totalPrice: 24.00 },
         { id: 'ITEM0022',
           count: 1,
           name: '凉皮',
@@ -143,5 +143,42 @@ describe ('Test typeTwoCharge', function () {
       name: ['黄焖鸡', '凉皮'],
       charge: 13.00 } ]
     );
+  });
+});
+
+describe ("Test printItemsList via buildPrintList",function () {
+  it ("should generate printItemsList when 指定菜品半价 ", function () {
+    let buyItemsInfo = [ {
+      id: 'ITEM0001',
+      count: 1,
+      name: '黄焖鸡',
+      price: 18.00,
+      totalPrice: 18.00
+    }, {
+      id: 'ITEM0013',
+      count: 2,
+      name: '肉夹馍',
+      price: 6.00,
+      totalPrice: 12.00
+    }, {
+      id: 'ITEM0022',
+      count: 1,
+      name: '凉皮',
+      price: 8.00,
+      totalPrice: 8.00} ];
+    let temp = promotionsInfo();
+    let temp2 = bestCharge.calculatePromotions(buyItemsInfo,temp);
+    let printItemsList = bestCharge.buildItemsInfo(temp2, buyItemsInfo);
+    expect(printItemsList).toEqual( `
+============= 订餐明细 =============
+黄焖鸡 x 1 = 18元
+肉夹馍 x 2 = 12元
+凉皮 x 1 = 8元
+-----------------------------------
+使用优惠:
+指定菜品半价(黄焖鸡，凉皮)，省13元
+-----------------------------------
+总计：25元
+===================================`.trim());
   });
 });
