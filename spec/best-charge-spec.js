@@ -3,6 +3,7 @@
 var bestCharge = require('../src/best-charge.js');
 
 var loadAllItems = require('../src/items.js');
+var promotionsInfo = require('../src/promotions.js');
 
 xdescribe('Take out food', function () {
 
@@ -54,7 +55,7 @@ xdescribe('Take out food', function () {
 
 });
 
-xdescribe ('Test inputService',function () {
+describe ('Test inputService',function () {
 
   it('should generate inputObject when do input ',function () {
     let inputs = ["ITEM0013 x 4", "ITEM0022 x 1"];
@@ -69,8 +70,83 @@ describe ('Test buildItemsInfo',function () {
     let inputInfo = [ { id: 'ITEM0013', count: 4 }, { id: 'ITEM0022', count: 1 } ];
     let allItems = loadAllItems();
     let buyItemsInfo = bestCharge.buildItemsInfo(inputInfo,allItems);
-    expect(buyItemsInfo).toEqual([ { id: 'ITEM0013', count: 4, name: '肉夹馍', price: 6.00, totalPrice: 24.00 },
-      { id: 'ITEM0022', count: 1, name: '凉皮', price: 8.00, totalPrice: 8.00} ]);
+    expect(buyItemsInfo).toEqual([ { id: 'ITEM0013',
+      count: 4,
+      name: '肉夹馍',
+      price: '6.00',
+      totalPrice: '24.00' },
+      { id: 'ITEM0022',
+        count: 1,
+        name: '凉皮',
+        price: '8.00',
+        totalPrice: '8.00' } ]);
   });
+});
+
+xdescribe (' Test calculatePromotions ',function () {
+  if ("should generate bestCharge via calculatePromotions when best is 满30减6元", function () {
+      let buyItemsInfo = [ { id: 'ITEM0013',
+        count: 4,
+        name: '肉夹馍',
+        price: '6.00',
+        totalPrice: '24.00' },
+        { id: 'ITEM0022',
+          count: 1,
+          name: '凉皮',
+          price: '8.00',
+          totalPrice: '8.00' } ];
+      let promotionsInfo = promotionsInfo();
+      let bestCharge = bestCharge.calculatePromotions(buyItemsInfo,promotionsInfo);
+      expect(bestCharge).toEqual([ { type: '满30减6元',
+          name: '肉夹馍',
+          charge: '6.00' } ]
+        );
+    });
+  if ("should generate bestCharge via calculatePromotions when best is 指定菜品半价", function () {
+      let buyItemsInfo = [ {
+        id: 'ITEM0001',
+        count: 1,
+        name: '黄焖鸡',
+        price: 18.00,
+        totalPrice: 18.00
+      }, {
+        id: 'ITEM0013',
+        count: 2,
+        name: '肉夹馍',
+        price: 6.00,
+        totalPrice: 12.00
+      }, {
+        id: 'ITEM0022',
+        count: 1,
+        name: '凉皮',
+        price: 8.00,
+        totalPrice: 8.00
+      } ];
+      let promotionsInfo = promotionsInfo();
+      let bestCharge = bestCharge.calculatePromotions(buyItemsInfo,promotionsInfo);
+      expect(bestCharge).toEqual([ { type: '指定菜品半价',
+        name: ['黄焖鸡', '凉皮'],
+        charge: '13.00' } ]
+      );
+    });
+});
+
+describe ('Test typeOnePromotions', function () {
+  let buyItemsInfo = [ { id: 'ITEM0013',
+    count: 4,
+    name: '肉夹馍',
+    price: '6.00',
+    totalPrice: '24.00' },
+    { id: 'ITEM0022',
+      count: 1,
+      name: '凉皮',
+      price: '8.00',
+      totalPrice: '8.00' } ];
+  let type = promotionsInfo()[0].type;
+  let typeOneCharge = bestCharge.typeOneCharge(buyItemsInfo, type);
+  expect(typeOneCharge).toEqual([ { type: '满30减6元',
+    name: '肉夹馍',
+    charge: '6.00' } ]
+  );
 });
 
