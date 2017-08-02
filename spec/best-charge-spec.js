@@ -84,7 +84,11 @@ describe ('Test buildItemsInfo',function () {
 });
 
 xdescribe (' Test calculatePromotions ',function () {
-  if ("should generate bestCharge via calculatePromotions when best is 满30减6元", function () {
+
+});
+
+describe ('Test typeOneCharge', function () {
+  it ("should generate typeOnePromotions when 满30减6" ,function () {
       let buyItemsInfo = [ { id: 'ITEM0013',
         count: 4,
         name: '肉夹馍',
@@ -95,58 +99,42 @@ xdescribe (' Test calculatePromotions ',function () {
           name: '凉皮',
           price: '8.00',
           totalPrice: '8.00' } ];
-      let promotionsInfo = promotionsInfo();
-      let bestCharge = bestCharge.calculatePromotions(buyItemsInfo,promotionsInfo);
-      expect(bestCharge).toEqual([ { type: '满30减6元',
-          name: '肉夹馍',
-          charge: '6.00' } ]
-        );
-    });
-  if ("should generate bestCharge via calculatePromotions when best is 指定菜品半价", function () {
-      let buyItemsInfo = [ {
-        id: 'ITEM0001',
-        count: 1,
-        name: '黄焖鸡',
-        price: 18.00,
-        totalPrice: 18.00
-      }, {
-        id: 'ITEM0013',
-        count: 2,
-        name: '肉夹馍',
-        price: 6.00,
-        totalPrice: 12.00
-      }, {
-        id: 'ITEM0022',
-        count: 1,
-        name: '凉皮',
-        price: 8.00,
-        totalPrice: 8.00
-      } ];
-      let promotionsInfo = promotionsInfo();
-      let bestCharge = bestCharge.calculatePromotions(buyItemsInfo,promotionsInfo);
-      expect(bestCharge).toEqual([ { type: '指定菜品半价',
-        name: ['黄焖鸡', '凉皮'],
-        charge: '13.00' } ]
+      let type = promotionsInfo()[0].type;
+      let typeOneCharge = bestCharge.typeOneCharge(buyItemsInfo, type);
+      expect(typeOneCharge).toEqual([ { type: '满30减6元',
+        charge: 6.00 } ]
       );
     });
+
 });
 
-describe ('Test typeOnePromotions', function () {
-  let buyItemsInfo = [ { id: 'ITEM0013',
-    count: 4,
-    name: '肉夹馍',
-    price: '6.00',
-    totalPrice: '24.00' },
-    { id: 'ITEM0022',
+describe ('Test typeTwoCharge', function () {
+  it ("should generate typeTwoPromotions when 指定菜品半价" ,function () {
+    let buyItemsInfo = [ {
+      id: 'ITEM0001',
+      count: 1,
+      name: '黄焖鸡',
+      price: 18.00,
+      totalPrice: 18.00
+    }, {
+      id: 'ITEM0013',
+      count: 2,
+      name: '肉夹馍',
+      price: 6.00,
+      totalPrice: 12.00
+    }, {
+      id: 'ITEM0022',
       count: 1,
       name: '凉皮',
-      price: '8.00',
-      totalPrice: '8.00' } ];
-  let type = promotionsInfo()[0].type;
-  let typeOneCharge = bestCharge.typeOneCharge(buyItemsInfo, type);
-  expect(typeOneCharge).toEqual([ { type: '满30减6元',
-    name: '肉夹馍',
-    charge: '6.00' } ]
-  );
-});
+      price: 8.00,
+      totalPrice: 8.00
+    } ];
+    let type = promotionsInfo()[1].type;
+    let typeTwoCharge = bestCharge.typeTwoCharge(buyItemsInfo, type);
+    expect(typeTwoCharge).toEqual([ { type: '指定菜品半价',
+      name: ['黄焖鸡', '凉皮'],
+      charge: 13.00 } ]
+    );
+  });
 
+});
