@@ -1,13 +1,15 @@
 'use strict';
 var loadAllItems = require('./items.js');
+var loadPromotions = require('./promotions.js');
 var allItems = loadAllItems();
+var promotionsInfo = loadPromotions();
 function bestCharge(selectedItem) {
   var inputInfo = inputService(selectedItem);
   var buyItemsInfo = buildItemsInfo(inputInfo,allItems);
+  var bestCharge = calculatePromotions(buyItemsInfo,promotionsInfo);
  // return /*TODO*/;
 }
 function inputService(tags) {
-  console.log(tags);
   let inputInfo = [];
   for (let item of tags) {
     if(item.includes('x')){
@@ -15,7 +17,6 @@ function inputService(tags) {
       inputInfo.push({id:arrayItem[0].trim(),count:parseInt(arrayItem[1].trim())});
     }
   }
-  console.log(inputInfo);
   return inputInfo;
 }
 
@@ -31,8 +32,27 @@ function buildItemsInfo(inputInfo,allItems) {
   }
   return buyItemsInfo;
 }
+/**
+function calculatePromotions( buyItemsInfo, promotionsInfo ) {
+  var bestCharge = [];
 
-module.exports = {buildItemsInfo: buildItemsInfo,inputService:inputService};
+  return bestCharge;
+}
+**/
+function typeOneCharge( buyItemsInfo, type) {
+  let typeOnePromotions = [];
+  let summary = 0;
+
+  for (let obj of buyItemsInfo) {
+    summary += parseInt(obj.totalPrice);
+  }
+  if (summary >= 30){
+    typeOnePromotions.push({type: type, charge: 6.00 })
+  }
+  console.log(typeOnePromotions);
+  return typeOnePromotions;
+}
+module.exports = { buildItemsInfo: buildItemsInfo, inputService: inputService, typeOneCharge: typeOneCharge };
 
 
 
