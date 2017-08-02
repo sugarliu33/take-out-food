@@ -3,14 +3,15 @@ var loadAllItems = require('./items.js');
 var loadPromotions = require('./promotions.js');
 var allItems = loadAllItems();
 var promotionsInfo = loadPromotions();
-
-function bestCharge(selectedItem) {
+/**
+function bestPromotions(selectedItem) {
   var inputInfo = inputService(selectedItem);
   var buyItemsInfo = buildItemsInfo(inputInfo,allItems);
   var bestCharge = calculatePromotions(buyItemsInfo,promotionsInfo);
- // return /*TODO*/
+  var printItemsList = buildItemsInfo(buyItemsInfo,bestCharge);
+  return printItemsList;
 }
-
+**/
 function inputService(tags) {
   let inputInfo = [];
   for (let item of tags) {
@@ -26,7 +27,7 @@ function buildItemsInfo(inputInfo,allItems) {
   var buyItemsInfo = [];
   for (let obj of allItems) {
     for (let item of inputInfo) {
-      if (item.id == obj.id){
+      if (item.id === obj.id){
         let totalPrice = item.count * obj.price;
         buyItemsInfo.push({ id: obj.id, count: item.count, name: obj.name, price: parseInt(obj.price), totalPrice: totalPrice })
       }
@@ -36,14 +37,15 @@ function buildItemsInfo(inputInfo,allItems) {
 }
 
 function calculatePromotions( buyItemsInfo, promotionsInfo ) {
-  var bestCharge = [];
   var typeOnePromotions = typeOneCharge ( buyItemsInfo, promotionsInfo[0].type);
   var typeTwoPromotions = typeTwoCharge ( buyItemsInfo, promotionsInfo[1]);
-  console.log(typeOnePromotions);
   if (typeOnePromotions[0].charge === 0 && typeTwoPromotions[0].charge === 0){
     return 0;
+  }else if (typeOnePromotions[0].charge > typeTwoPromotions[0].charge){
+    return typeOnePromotions;
+  }else {
+    return typeTwoPromotions;
   }
-  
 }
 
 function typeOneCharge( buyItemsInfo, type) {
@@ -77,8 +79,28 @@ function typeTwoCharge(buyItemsInfo, promotionTwo) {
   return typeTwoPromotions;
 }
 
+function buildPrintList(buyItemsInfo, bestCharge) {
+  console.log('ok');
+  var printItemsList = '';
+  var summary = 0;
+  for (let obj of buyItemsInfo) {
+    summary += obj.totalPrice;
+  }
+  printItemsList += '============= 订餐明细 =============';
+  for (let obj of buyItemsInfo) {
+    printItemsList += obj.name + " x "+ obj.count + " = "+ obj.totalPrice + "元" + '\n';
+  }
+  printItemsList += '-----------------------------------' + '\n' + '使用优惠:' + '\n';
+  if (bestCharge[0].type === '指定菜品半价'){
+    printItemsList += '(' + bestCharge[0].name +'), '+ '省' + bestCharge[0].charge + '元'+'\n';
+  }
+  printItemsList += '-----------------------------------' + '\n';
+  printItemsList += '总计：' + summary + '元' + '\n';
+  printItemsList += '===================================';
+  return printItemsList;
+}
 module.exports = { buildItemsInfo: buildItemsInfo, inputService: inputService, typeOneCharge: typeOneCharge,
-typeTwoCharge: typeTwoCharge, calculatePromotions: calculatePromotions};
+typeTwoCharge: typeTwoCharge, calculatePromotions: calculatePromotions, buildPrintList: buildPrintList};
 
 
 
