@@ -1,6 +1,9 @@
 'use strict';
-
+var loadAllItems = require('./items.js');
+var allItems = loadAllItems();
 function bestCharge(selectedItem) {
+  var inputInfo = inputService(selectedItem);
+  var buyItemsInfo = buildItemsInfo(inputInfo,allItems);
  // return /*TODO*/;
 }
 function inputService(tags) {
@@ -16,7 +19,20 @@ function inputService(tags) {
   return inputInfo;
 }
 
-module.exports = inputService;
+function buildItemsInfo(inputInfo,allItems) {
+  var buyItemsInfo = [];
+  for (let obj of allItems) {
+    for (let item of inputInfo) {
+      if (item.id == obj.id){
+        let totalPrice = (item.count * obj.price).toFixed(2);
+        buyItemsInfo.push({ id: obj.id, count: item.count,name: obj.name, price: obj.price.toFixed(2), totalPrice: totalPrice })
+      }
+    }
+  }
+  return buyItemsInfo;
+}
+
+module.exports = {buildItemsInfo: buildItemsInfo,inputService:inputService};
 
 
 
