@@ -49,10 +49,28 @@ function typeOneCharge( buyItemsInfo, type) {
   if (summary >= 30){
     typeOnePromotions.push({type: type, charge: 6.00 })
   }
-  console.log(typeOnePromotions);
   return typeOnePromotions;
 }
-module.exports = { buildItemsInfo: buildItemsInfo, inputService: inputService, typeOneCharge: typeOneCharge };
+
+function typeTwoCharge(buyItemsInfo, promotionTwo) {
+  let typeTwoPromotions = [];
+  let promotionItem = promotionTwo.items;
+  let itemName = [];
+  let charge = 0;
+  for (let obj of buyItemsInfo) {
+    for (let item of promotionItem){
+      if ( obj.id == item){
+        itemName.push(obj.name);
+        charge += obj.price / 2;
+      }
+    }
+  }
+  typeTwoPromotions.push({type:promotionTwo.type, name:itemName, charge: charge});
+  return typeTwoPromotions;
+}
+
+module.exports = { buildItemsInfo: buildItemsInfo, inputService: inputService, typeOneCharge: typeOneCharge,
+typeTwoCharge: typeTwoCharge};
 
 
 
