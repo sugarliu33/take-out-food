@@ -1,4 +1,9 @@
-describe('Take out food', function () {
+'use strict';
+
+var temp = require('../src/best-charge.js');
+var inputService = temp.inputService;
+xdescribe('Take out food', function () {
+
 
   it('should generate best charge when best is 指定菜品半价', function() {
     let inputs = ["ITEM0001 x 1", "ITEM0013 x 2", "ITEM0022 x 1"];
@@ -13,7 +18,7 @@ describe('Take out food', function () {
 指定菜品半价(黄焖鸡，凉皮)，省13元
 -----------------------------------
 总计：25元
-===================================`.trim()
+===================================`.trim()//String.trim():去掉字符串首尾的空格或预定义字符。
     expect(summary).toEqual(expected)
   });
 
@@ -44,5 +49,16 @@ describe('Take out food', function () {
 ===================================`.trim()
     expect(summary).toEqual(expected)
   });
+
+});
+
+describe ('Test inputService',function () {
+
+  it('should generate object when input',function () {
+    let inputs = ["ITEM0013 x 4", "ITEM0022 x 1"];
+    let inputsInfo = inputService(inputs);
+    let expected = '[{ITEM0013:4,ITEM0022:1}]';
+    expect(inputsInfo).toEqual(expected);
+  })
 
 });
