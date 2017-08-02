@@ -1,7 +1,9 @@
 'use strict';
 
-var temp = require('../src/best-charge.js');
-var inputService = temp.inputService;
+var bestCharge = require('../src/best-charge.js');
+
+var loadAllItems = require('../src/items.js');
+
 xdescribe('Take out food', function () {
 
 
@@ -52,13 +54,23 @@ xdescribe('Take out food', function () {
 
 });
 
-describe ('Test inputService',function () {
+xdescribe ('Test inputService',function () {
 
-  it('should generate object when input',function () {
+  it('should generate inputObject when do input ',function () {
     let inputs = ["ITEM0013 x 4", "ITEM0022 x 1"];
-    let inputsInfo = inputService(inputs);
-    let expected = '[{ITEM0013:4,ITEM0022:1}]';
+    let inputsInfo = bestCharge.inputService(inputs);
+    let expected = [ { id: 'ITEM0013', count: 4 }, { id: 'ITEM0022', count: 1 } ];
     expect(inputsInfo).toEqual(expected);
-  })
-
+  });
 });
+
+describe ('Test buildItemsInfo',function () {
+  it ('should generate buyItemsInfo via buildItemsInfo()',function () {
+    let inputInfo = [ { id: 'ITEM0013', count: 4 }, { id: 'ITEM0022', count: 1 } ];
+    let allItems = loadAllItems();
+    let buyItemsInfo = bestCharge.buildItemsInfo(inputInfo,allItems);
+    expect(buyItemsInfo).toEqual([ { id: 'ITEM0013', count: 4, name: '肉夹馍', price: 6.00, totalPrice: 24.00 },
+      { id: 'ITEM0022', count: 1, name: '凉皮', price: 8.00, totalPrice: 8.00} ]);
+  });
+});
+
