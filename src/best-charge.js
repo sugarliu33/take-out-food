@@ -3,15 +3,15 @@ var loadAllItems = require('./items.js');
 var loadPromotions = require('./promotions.js');
 var allItems = loadAllItems();
 var promotionsInfo = loadPromotions();
-/**
+
 function bestPromotions(selectedItem) {
   var inputInfo = inputService(selectedItem);
-  var buyItemsInfo = buildItemsInfo(inputInfo,allItems);
-  var bestCharge = calculatePromotions(buyItemsInfo,promotionsInfo);
-  var printItemsList = buildItemsInfo(buyItemsInfo,bestCharge);
+  var buyItemsInfo = buildItemsInfo(inputInfo, allItems);
+  var bestCharge = calculatePromotions(buyItemsInfo, promotionsInfo);
+  var printItemsList = buildPrintList(bestCharge, buyItemsInfo);
   return printItemsList;
 }
-**/
+
 function inputService(tags) {
   let inputInfo = [];
   for (let item of tags) {
@@ -37,10 +37,11 @@ function buildItemsInfo(inputInfo,allItems) {
 }
 
 function calculatePromotions( buyItemsInfo, promotionsInfo ) {
+  var bestCharge = [{type: '', charge: 0}];
   var typeOnePromotions = typeOneCharge ( buyItemsInfo, promotionsInfo[0].type);
   var typeTwoPromotions = typeTwoCharge ( buyItemsInfo, promotionsInfo[1]);
   if (typeOnePromotions[0].charge === 0 && typeTwoPromotions[0].charge === 0){
-    return 0;
+    return bestCharge;
   }else if (typeOnePromotions[0].charge > typeTwoPromotions[0].charge){
     return typeOnePromotions;
   }else {
@@ -89,8 +90,9 @@ function buildPrintList(bestCharge, buyItemsInfo) {
   for (let obj of buyItemsInfo) {
     printItemsList += obj.name + " x "+ obj.count + " = "+ obj.totalPrice + "元" + '\n';
   }
-  printItemsList += '-----------------------------------' + '\n' + '使用优惠:' + '\n';
+  printItemsList += '-----------------------------------' + '\n';
   if (bestCharge[0].type === '指定菜品半价'){
+    printItemsList +=  '使用优惠:' + '\n';
     printItemsList += '指定菜品半价(' ;
     let flag = 1;
     for (var item of bestCharge[0].name){
@@ -104,14 +106,17 @@ function buildPrintList(bestCharge, buyItemsInfo) {
     }
     printItemsList += '省' + bestCharge[0].charge + '元'+'\n';
     printItemsList += '-----------------------------------' + '\n';
-    printItemsList += '总计：' + (summary - bestCharge[0].charge) + '元' + '\n';
+  }else if (bestCharge[0].type === '满30减6元'){
+    printItemsList +=  '使用优惠:' + '\n';
+    printItemsList += '满30减6元，' + '省' + bestCharge[0].charge + '元' + '\n';
+    printItemsList += '-----------------------------------' + '\n';
   }
 
-
+  printItemsList += '总计：' + (summary - bestCharge[0].charge) + '元' + '\n';
   printItemsList += '===================================' + '\n';
-  return printItemsList.trim();
+  return printItemsList;
 }
-module.exports = { buildItemsInfo: buildItemsInfo, inputService: inputService, typeOneCharge: typeOneCharge,
+module.exports = { bestPromotions: bestPromotions, buildItemsInfo: buildItemsInfo, inputService: inputService, typeOneCharge: typeOneCharge,
 typeTwoCharge: typeTwoCharge, calculatePromotions: calculatePromotions, buildPrintList: buildPrintList};
 
 
