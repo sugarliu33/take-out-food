@@ -91,12 +91,25 @@ function buildPrintList(bestCharge, buyItemsInfo) {
   }
   printItemsList += '-----------------------------------' + '\n' + '使用优惠:' + '\n';
   if (bestCharge[0].type === '指定菜品半价'){
-    printItemsList += '指定菜品半价(' + bestCharge[0].name +')，'+ '省' + bestCharge[0].charge + '元'+'\n';
+    printItemsList += '指定菜品半价(' ;
+    let flag = 1;
+    for (var item of bestCharge[0].name){
+      printItemsList += item;
+      if (flag != bestCharge[0].name.length){
+        printItemsList += '，';
+        flag++;
+      }else {
+        printItemsList += ')，';
+      }
+    }
+    printItemsList += '省' + bestCharge[0].charge + '元'+'\n';
+    printItemsList += '-----------------------------------' + '\n';
+    printItemsList += '总计：' + (summary - bestCharge[0].charge) + '元' + '\n';
   }
-  printItemsList += '-----------------------------------' + '\n';
-  printItemsList += '总计：' + (summary - bestCharge[0].charge) + '元' + '\n';
+
+
   printItemsList += '===================================' + '\n';
-  return printItemsList;
+  return printItemsList.trim();
 }
 module.exports = { buildItemsInfo: buildItemsInfo, inputService: inputService, typeOneCharge: typeOneCharge,
 typeTwoCharge: typeTwoCharge, calculatePromotions: calculatePromotions, buildPrintList: buildPrintList};
